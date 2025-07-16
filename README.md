@@ -23,7 +23,7 @@ This sample project demonstrates a microservices architecture for a simplified e
 * **PostgreSQL Databases:** Two separate instances (managed by a single `postgres` container with multiple databases) for `product_db` and `inventory_db`.
 * **React Frontend (`frontend-react-app`):** A client-side application that interacts with the `API Gateway`.
 
-<img src="/doc/image/Arch.png"/>
+<img alt="Architecture Diagram" src="/doc/image/Arch.png"/>
 
 ## Technologies Used
 
