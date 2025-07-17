@@ -25,4 +25,26 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,gateway
+        include: health,info,gateway,metrics,circuitbreakerevents # Add metrics and circuitbreakerevents for monitoring
+
+resilience4j.circuitbreaker:
+  configs:
+    default: # Default configuration for any unnamed circuit breakers'
+      failureRateThreshold: 50 # % of calls that are failures to trip the circuit
+      slowCallRateThreshold: 100 # % of calls considered slow (if duration exceeds slowCallDurationThreshold)
+      slowCallDurationThreshold: 5000ms # Calls taking >5s are considered slow
+      permittedNumberOfCallsInHalfOpenState: 3 # Number of calls allowed in HALF_OPEN state to test service recovery
+      slidingWindowType: COUNT_BASED # or TIME_BASED
+      slidingWindowSize: 10 # Number of calls in the window to calculate failure rate
+      minimumNumberOfCalls: 5 # Min calls before failure rate is calculated
+      waitDurationInOpenState: 15s # Time circuit stays OPEN before transitioning to HALF_OPEN
+      automaticTransitionFromOpenToHalfOpenEnabled: true # Automatically transitions from OPEN to HALF_OPEN
+      registerHealthIndicator: true # Register health indicator for all CBs by default
+  instances:
+    product-service-gateway-cb:
+      baseConfig: default
+      waitDurationInOpenState: 20s # Example: Product service might need longer recovery time
+
+    inventory-service-gateway-cb:
+      baseConfig: default
+      failureRateThreshold: 60 # Example: Inventory service might tolerate more failures

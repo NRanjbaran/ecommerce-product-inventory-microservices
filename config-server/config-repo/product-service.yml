@@ -30,4 +30,23 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,metrics,circuitbreakerevents
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      failureRateThreshold: 50
+      slowCallRateThreshold: 100
+      slowCallDurationThreshold: 2000ms
+      permittedNumberOfCallsInHalfOpenState: 3
+      slidingWindowType: COUNT_BASED
+      slidingWindowSize: 10
+      minimumNumberOfCalls: 5
+      waitDurationInOpenState: 10s
+      automaticTransitionFromOpenToHalfOpenEnabled: true
+      registerHealthIndicator: true
+  instances:
+    # Circuit breaker for database calls within product-service
+    productDbCircuitBreaker: # Example name for a DB circuit breaker
+      baseConfig: default
+      failureRateThreshold: 70 # Product DB might be critical, so trip faster

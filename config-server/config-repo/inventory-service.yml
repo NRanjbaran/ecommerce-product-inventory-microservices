@@ -28,4 +28,33 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,metrics,circuitbreakerevents # Essential for monitoring CBs
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      failureRateThreshold: 50
+      slowCallRateThreshold: 100
+      slowCallDurationThreshold: 2000ms # 2 seconds
+      permittedNumberOfCallsInHalfOpenState: 3
+      slidingWindowType: COUNT_BASED
+      slidingWindowSize: 10
+      minimumNumberOfCalls: 5
+      waitDurationInOpenState: 10s
+      automaticTransitionFromOpenToHalfOpenEnabled: true
+      registerHealthIndicator: true
+  instances:
+    # Circuit breaker for calls made to product-service (via WebClient or RestTemplate)
+    productServiceCircuitBreaker: # Matches name in @CircuitBreaker on getProductDetails()
+      baseConfig: default
+      waitDurationInOpenState: 12s # Slightly longer for inter-service calls
+
+    # Circuit breaker for database calls within inventory-service
+    inventoryDbCircuitBreaker: # Matches name in @CircuitBreaker on getAllInventoryItems()
+      baseConfig: default
+      failureRateThreshold: 60 # Can be more lenient for DB if needed
+
+    # Circuit breaker for calls to a legacy system
+    legacySystemCircuitBreaker: # Matches name in @CircuitBreaker on fetchLegacyData()
+      baseConfig: default
+      waitDurationInOpenState: 30s # Longer wait for potentially very slow/unreliable external systems
