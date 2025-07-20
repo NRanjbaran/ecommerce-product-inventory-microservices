@@ -26,13 +26,13 @@ class ConfigServerApplicationTest {
     @Value(value = "${local.server.port}")
     private int port;
 
-    private final TestRestTemplate restTemplate = new TestRestTemplate();
+    private TestRestTemplate restTemplate;
 
-    /*@BeforeEach
+    @BeforeEach
     void init() {
         restTemplate = new TestRestTemplate();
     }
-*/
+
     /**
      * Test case to verify that the Spring application context loads successfully.
      * This is a fundamental check for overall application health.
