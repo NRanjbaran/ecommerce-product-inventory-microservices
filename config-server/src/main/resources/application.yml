@@ -10,9 +10,9 @@ spring:
     config:
       server:
         native:
+          search-locations: file:///${user.dir}/config-repo
 #          uri: file://${user.dir}/config-server/config-repo
-          clone-on-start: true
-          search-locations: file://./config-repo
+#          clone-on-start: true
 
 eureka:
   client:
