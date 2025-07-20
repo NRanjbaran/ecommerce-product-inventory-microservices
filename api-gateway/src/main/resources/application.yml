@@ -5,13 +5,15 @@ spring:
     import: configserver:http://localhost:8888
   cloud:
     gateway:
-      globalcors:
-        cors-configurations:
-          '[/**]':
-            allowedOrigins: ["http://localhost:3000"]
-            allowedMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-            allowedHeaders: ["*"]
-            allow-credentials: true
+      server:
+        webflux:
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowedOrigins: [ "http://localhost:3000" ]
+                allowedMethods: [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ]
+                allowedHeaders: [ "*" ]
+                allow-credentials: true
 
 #eureka:
 #  client:
